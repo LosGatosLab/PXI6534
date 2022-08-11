@@ -147,7 +147,7 @@ class data_proc(object) :
 		return return_array
 
 	def MultiTSV(self, filename):
-		with open("RSOC_E2_Register_no002_out.tsv") as file:
+		with open(filename) as file:
 			addr_arr = []
 			reg_arr = []
 			tsv_file = csv.reader(file, delimiter="\t")
