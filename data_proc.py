@@ -15,6 +15,12 @@ class data_proc(object) :
 		for i in range(num_of_doppler):
 			self.PXI_arr += self.PXI_arr_gen(fs, trig_period)
 
+	def PXI_seq_master_loop(self,  fs, trig_period, num_of_doppler):
+		#self.PXI_arr += self.Write_in_reg(BUF_ENB = 6, MUX = 0, MUX_EN = 1, reg_index = 0)   ### write all register for once self, BUF_ENB, MUX, MUX_EN, reg_index
+		#self.PXI_arr += self.delay(BUF_ENB = 6, MUX = 0, MUX_EN = 1, fs = fs, time = 100e-6)  ### delay 100us to settle RSOC delay(self, BUF_ENB, MUX, MUX_EN, fs, time)
+		for i in range(num_of_doppler):
+			self.PXI_arr += self.PXI_arr_gen(fs, trig_period)
+
 	def PXI_arr_gen(self, fs, trig_period):
 		return_array = []
 		num_of_sample_per_trig_period = int(round(fs*trig_period))
