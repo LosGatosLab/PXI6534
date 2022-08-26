@@ -31,7 +31,7 @@ class data_proc(object) :
 
 	def ChirpGen_ALL(self, fs, num_of_sample_per_trig_period, tx_index):
 		return_array = []
-		trig_width = 5e-6
+		trig_width = 10e-6
 		num_of_trig_width =  int(round(fs*trig_width))
 		if (tx_index == 0):
 			return_array += self.ChirpGen_alloff(which_group = 0, num_of_trig_width = num_of_trig_width, num_of_sample_per_trig_period = num_of_sample_per_trig_period)
@@ -101,7 +101,7 @@ class data_proc(object) :
 
 
 	def WriteLine(self,Chirp_Start, BUF_ENB, MUX, MUX_EN, RST, STRB, Addr, Reg):
-		return Chirp_Start*pow(2,30)+ BUF_ENB*pow(2,27) + MUX*pow(2,25) + MUX_EN*pow(2,24) + RST*pow(2,17) + STRB*pow(2,16) + Addr*pow(2,8) + Reg
+		return Chirp_Start*pow(2,30)+ BUF_ENB*pow(2,27) + MUX*pow(2,25) + MUX_EN*pow(2,24) + RST*pow(2,18) + STRB*pow(2,16) + Addr*pow(2,8) + Reg
 
 	def WriteTrig(self, BUF_ENB, MUX, MUX_EN, trig_width):
 		return_array = []
