@@ -17,11 +17,11 @@ import numpy as np
 from nidaqmx.stream_writers import (
     DigitalSingleChannelWriter, DigitalMultiChannelWriter)
 
-sampling_clock = 500000 ## set for 10MHz now 
+sampling_clock = 1000000 ## set for 10MHz now 
 # object1 = dp.data_proc(["init_div_off.tsv","tx_0.tsv","tx_1.tsv","tx_2.tsv","tx_3.tsv","tx_4.tsv","tx_5.tsv","tx_6.tsv","tx_7.tsv","tx_8.tsv"])
 # object1 = dp.data_proc(["copy_RSOC_E2_Register_Everything_Off_out.tsv"])
-# object1 = dp.data_proc(["copy_RSOC_E2_Register_V2_no002_out.tsv","tx_0.tsv"])
-object1 = dp.data_proc(["copy_RSOC_E2_Register_V2_no002_out.tsv"])
+# object1 = dp.data_proc(["copy_RSOC_E2_Register_V2_no002_out.tsv"])
+object1 = dp.data_proc(["copy_RSOC_E2_Register_V2_no002_out_pad.tsv",'do_nothing.tsv'])
 
 # object1 = dp.data_proc(["init_div_off.tsv","tx_0.tsv"])
 
@@ -64,7 +64,7 @@ with nidaqmx.Task() as task:
 
     samples_written = task.write(input_arr, auto_start=True)
 
-    time.sleep(5)
+    time.sleep(10)
     # task.start()
     # print('output_buf_size: '+ str(task.out_stream.output_buf_size))
     # print('samples: ' + str(samples_written))

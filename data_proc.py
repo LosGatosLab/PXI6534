@@ -8,12 +8,39 @@ class data_proc(object) :
 			addr, reg = self.MultiTSV(i)
 			self.addr_arr.append(addr)
 			self.reg_arr.append(reg)
+		print('reg size:'+str(len(self.reg_arr)))
+		print(self.reg_arr)
+		print('reg size:'+str(len(self.addr_arr)))
+		print(self.addr_arr)
+
 
 	def PXI_seq_master(self,  fs, trig_period, num_of_doppler):
 		self.PXI_arr += self.Write_in_reg(BUF_ENB = 6, MUX = 0, MUX_EN = 1, reg_index = 0)   ### write all register for once self, BUF_ENB, MUX, MUX_EN, reg_index
 		self.PXI_arr += self.delay(BUF_ENB = 6, MUX = 0, MUX_EN = 1, fs = fs, time = 100e-6)  ### delay 100us to settle RSOC delay(self, BUF_ENB, MUX, MUX_EN, fs, time)
 		for i in range(num_of_doppler):
 			self.PXI_arr += self.PXI_arr_gen(fs, trig_period)
+
+	def PXI_seq_initial(self):
+		self.PXI_arr += self.Write_in_reg(BUF_ENB = 6, MUX = 0, MUX_EN = 1, reg_index = 0)   ### write all register for once self, BUF_ENB, MUX, MUX_EN, reg_index
+
+	def PXI_seq_doppler(self,fs, trig_period, num_of_doppler):
+		for i in range(num_of_doppler):
+			self.PXI_arr += self.PXI_arr_gen(fs, trig_period)
+
+	def PXI_seq_chrip_only(self, fs, trig_period, num_of_chrips, BUF_ENB,MUX,MUX_EN):
+		#### pad some value in front #######
+		for i in range(100):
+			self.PXI_arr += [self.WriteLine(Chirp_Start = 0, BUF_ENB =BUF_ENB, MUX = MUX, MUX_EN = MUX_EN, RST = 1, STRB = 0, Addr = 255, Reg = 0)]
+		####################################
+		trig_width = 10e-6
+		num_of_trig_width =  int(round(fs*trig_width))
+		num_of_sample_per_trig_period = int(round(fs*trig_period))
+
+		for i in range(num_of_chrips):
+			self.PXI_arr += self.WriteTrig(BUF_ENB = BUF_ENB, MUX = MUX, MUX_EN = MUX_EN, trig_width = num_of_trig_width)
+			self.PXI_arr += self.delay_in_sample(BUF_ENB = BUF_ENB, MUX = MUX, MUX_EN = MUX_EN, num_of_sample= num_of_sample_per_trig_period - num_of_trig_width)
+
+
 
 	def PXI_seq_master_loop(self,  fs, trig_period, num_of_doppler):
 		#self.PXI_arr += self.Write_in_reg(BUF_ENB = 6, MUX = 0, MUX_EN = 1, reg_index = 0)   ### write all register for once self, BUF_ENB, MUX, MUX_EN, reg_index
