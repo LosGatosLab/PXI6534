@@ -24,9 +24,9 @@ class pxi6534_gen(object):
 
     def write_FPGA_initial(self, file_to_write):
         object1 = dp.data_proc(file_to_write)
+        object1.PXI_seq_reset()
         object1.PXI_seq_initial()
         print('data proc length:' + str(len(object1.PXI_arr)))
-
         return object1.PXI_arr
 
     def sw_logic_analyzer(self, input_arr):

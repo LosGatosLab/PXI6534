@@ -23,6 +23,15 @@ class data_proc(object) :
 	def PXI_seq_initial(self):
 		self.PXI_arr += self.Write_in_reg(BUF_ENB = 6, MUX = 0, MUX_EN = 1, reg_index = 0)   ### write all register for once self, BUF_ENB, MUX, MUX_EN, reg_index
 
+
+	def PXI_seq_reset(self):
+		### write reset 20 times
+		for i in range(10):
+			self.PXI_arr += self.WriteLine(Chirp_Start = 0, BUF_ENB = 6, MUX = 0, MUX_EN = 1, RST = 0, STRB = 0, Addr = 255, Reg = 0)
+		for j in range(10):
+			self.PXI_arr += self.WriteLine(Chirp_Start = 0, BUF_ENB = 6, MUX = 0, MUX_EN = 1, RST = 1, STRB = 0, Addr = 255, Reg = 0)
+
+
 	def PXI_seq_doppler(self,fs, trig_period, num_of_doppler):
 		for i in range(num_of_doppler):
 			self.PXI_arr += self.PXI_arr_gen(fs, trig_period)
