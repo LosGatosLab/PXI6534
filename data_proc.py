@@ -101,7 +101,7 @@ class data_proc(object) :
 
 
 	def WriteLine(self,Chirp_Start, BUF_ENB, MUX, MUX_EN, RST, STRB, Addr, Reg):
-		return Chirp_Start*pow(2,30)+ BUF_ENB*pow(2,27) + MUX*pow(2,25) + MUX_EN*pow(2,24) + RST*pow(2,18) + STRB*pow(2,16) + Addr*pow(2,8) + Reg
+		return Chirp_Start*pow(2,30)+ BUF_ENB*pow(2,27) + MUX*pow(2,25) + MUX_EN*pow(2,24) + RST*pow(2,10) + STRB*pow(2,8) + Addr*pow(2,16) + Reg
 
 	def WriteTrig(self, BUF_ENB, MUX, MUX_EN, trig_width):
 		return_array = []
