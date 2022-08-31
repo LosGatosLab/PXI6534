@@ -16,23 +16,32 @@ class data_proc(object) :
 
 	def PXI_seq_master(self,  fs, trig_period, num_of_doppler):
 		self.PXI_arr += self.Write_in_reg(BUF_ENB = 6, MUX = 0, MUX_EN = 1, reg_index = 0)   ### write all register for once self, BUF_ENB, MUX, MUX_EN, reg_index
-		self.PXI_arr += self.delay(BUF_ENB = 6, MUX = 0, MUX_EN = 1, fs = fs, time = 100e-6)  ### delay 100us to settle RSOC delay(self, BUF_ENB, MUX, MUX_EN, fs, time)
+		self.PXI_arr += self.delay(BUF_ENB = 6, MUX = 0, MUX_EN = 1, fs = fs, time = 10e-6)  ### delay 100us to settle RSOC delay(self, BUF_ENB, MUX, MUX_EN, fs, time)
 		for i in range(num_of_doppler):
 			self.PXI_arr += self.PXI_arr_gen(fs, trig_period)
 
-	def PXI_seq_initial(self):
+	def PXI_seq_initial(self, fs, time):
 		self.PXI_arr += self.Write_in_reg(BUF_ENB = 6, MUX = 0, MUX_EN = 1, reg_index = 0)   ### write all register for once self, BUF_ENB, MUX, MUX_EN, reg_index
+		self.PXI_arr += self.delay(BUF_ENB = 6, MUX = 0, MUX_EN = 1, fs = fs, time = time)  ### delay 10us to settle RSOC delay(self, BUF_ENB, MUX, MUX_EN, fs, time)
 
+	def PXI_seq_dummy_delay(self, BUF_ENB, MUX, MUX_EN, fs, time):
+		self.PXI_arr = self.delay(BUF_ENB = BUF_ENB, MUX = MUX, MUX_EN = MUX_EN, fs = fs, time = time)  ### delay 10us to settle RSOC delay(self, BUF_ENB, MUX, MUX_EN, fs, time)
 
 	def PXI_seq_reset(self):
 		### write reset 20 times
 		for i in range(10):
-			self.PXI_arr += self.WriteLine(Chirp_Start = 0, BUF_ENB = 6, MUX = 0, MUX_EN = 1, RST = 0, STRB = 0, Addr = 255, Reg = 0)
+			self.PXI_arr += [self.WriteLine(Chirp_Start = 0, BUF_ENB = 6, MUX = 0, MUX_EN = 1, RST = 0, STRB = 0, Addr = 255, Reg = 0)]
 		for j in range(10):
-			self.PXI_arr += self.WriteLine(Chirp_Start = 0, BUF_ENB = 6, MUX = 0, MUX_EN = 1, RST = 1, STRB = 0, Addr = 255, Reg = 0)
+			self.PXI_arr += [self.WriteLine(Chirp_Start = 0, BUF_ENB = 6, MUX = 0, MUX_EN = 1, RST = 1, STRB = 0, Addr = 255, Reg = 0)]
+
+	def PXI_seq_clear(self):
+		### write reset 20 times
+		for i in range(2):
+			self.PXI_arr += [self.WriteLine(Chirp_Start = 0, BUF_ENB = 6, MUX = 0, MUX_EN = 1, RST = 1, STRB = 0, Addr = 0, Reg = 0)]
 
 
 	def PXI_seq_doppler(self,fs, trig_period, num_of_doppler):
+		self.PXI_arr += self.delay(BUF_ENB = 6, MUX = 0, MUX_EN = 1, fs = fs, time = 30e-6)
 		for i in range(num_of_doppler):
 			self.PXI_arr += self.PXI_arr_gen(fs, trig_period)
 
@@ -41,7 +50,7 @@ class data_proc(object) :
 		for i in range(100):
 			self.PXI_arr += [self.WriteLine(Chirp_Start = 0, BUF_ENB =BUF_ENB, MUX = MUX, MUX_EN = MUX_EN, RST = 1, STRB = 0, Addr = 255, Reg = 0)]
 		####################################
-		trig_width = 10e-6
+		trig_width = 20e-6
 		num_of_trig_width =  int(round(fs*trig_width))
 		num_of_sample_per_trig_period = int(round(fs*trig_period))
 
@@ -67,7 +76,7 @@ class data_proc(object) :
 
 	def ChirpGen_ALL(self, fs, num_of_sample_per_trig_period, tx_index):
 		return_array = []
-		trig_width = 10e-6
+		trig_width = 20e-6
 		num_of_trig_width =  int(round(fs*trig_width))
 		if (tx_index == 0):
 			return_array += self.ChirpGen_alloff(which_group = 0, num_of_trig_width = num_of_trig_width, num_of_sample_per_trig_period = num_of_sample_per_trig_period)
@@ -79,30 +88,41 @@ class data_proc(object) :
 		return return_array
 
 
+	# def ChirpGen(self,which_group, TX_index, num_of_trig_width, num_of_sample_per_trig_period):
+	# 	return_array = []
+	# 	if (which_group == 0):
+	# 		trig1 = self.WriteTrig(BUF_ENB = 6, MUX = 0, MUX_EN = 1, trig_width = num_of_trig_width)
+	# 		return_array += trig1
+	# 		reg1 = self.Write_in_reg(BUF_ENB = 6, MUX = 0, MUX_EN = 1, reg_index = TX_index)
+	# 		return_array += reg1
+	# 		delay1 = self.delay_in_sample(BUF_ENB = 6, MUX = 0, MUX_EN = 1, num_of_sample= num_of_sample_per_trig_period - len(trig1)- len(reg1))
+	# 		return_array += delay1
+	# 	elif (which_group == 1):
+	# 		trig1 = self.WriteTrig(BUF_ENB = 5, MUX = 1, MUX_EN = 1, trig_width = num_of_trig_width)
+	# 		return_array += trig1
+	# 		reg1 = self.Write_in_reg(BUF_ENB = 5, MUX = 1, MUX_EN = 1, reg_index = TX_index)
+	# 		return_array += reg1
+	# 		delay1 = self.delay_in_sample(BUF_ENB = 5, MUX = 1, MUX_EN = 1, num_of_sample= num_of_sample_per_trig_period - len(trig1)- len(reg1))
+	# 		return_array += delay1
+	# 	else:
+	# 		trig1 = self.WriteTrig(BUF_ENB = 3, MUX = 2, MUX_EN = 1, trig_width = num_of_trig_width)
+	# 		return_array += trig1
+	# 		reg1 = self.Write_in_reg(BUF_ENB = 3, MUX = 2, MUX_EN = 1, reg_index = TX_index)
+	# 		return_array += reg1
+	# 		delay1 = self.delay_in_sample(BUF_ENB = 3, MUX = 2, MUX_EN = 1, num_of_sample= num_of_sample_per_trig_period - len(trig1)- len(reg1))
+	# 		return_array += delay1
+	# 	return return_array
+
 	def ChirpGen(self,which_group, TX_index, num_of_trig_width, num_of_sample_per_trig_period):
 		return_array = []
-		if (which_group == 0):
-			trig1 = self.WriteTrig(BUF_ENB = 6, MUX = 0, MUX_EN = 1, trig_width = num_of_trig_width)
-			return_array += trig1
-			reg1 = self.Write_in_reg(BUF_ENB = 6, MUX = 0, MUX_EN = 1, reg_index = TX_index)
-			return_array += reg1
-			delay1 = self.delay_in_sample(BUF_ENB = 6, MUX = 0, MUX_EN = 1, num_of_sample= num_of_sample_per_trig_period - len(trig1)- len(reg1))
-			return_array += delay1
-		elif (which_group == 1):
-			trig1 = self.WriteTrig(BUF_ENB = 5, MUX = 1, MUX_EN = 1, trig_width = num_of_trig_width)
-			return_array += trig1
-			reg1 = self.Write_in_reg(BUF_ENB = 5, MUX = 1, MUX_EN = 1, reg_index = TX_index)
-			return_array += reg1
-			delay1 = self.delay_in_sample(BUF_ENB = 5, MUX = 1, MUX_EN = 1, num_of_sample= num_of_sample_per_trig_period - len(trig1)- len(reg1))
-			return_array += delay1
-		else:
-			trig1 = self.WriteTrig(BUF_ENB = 3, MUX = 2, MUX_EN = 1, trig_width = num_of_trig_width)
-			return_array += trig1
-			reg1 = self.Write_in_reg(BUF_ENB = 3, MUX = 2, MUX_EN = 1, reg_index = TX_index)
-			return_array += reg1
-			delay1 = self.delay_in_sample(BUF_ENB = 3, MUX = 2, MUX_EN = 1, num_of_sample= num_of_sample_per_trig_period - len(trig1)- len(reg1))
-			return_array += delay1
+		trig1 = self.WriteTrig(BUF_ENB = 6, MUX = 0, MUX_EN = 1, trig_width = num_of_trig_width)
+		return_array += trig1
+		reg1 = self.Write_in_reg(BUF_ENB = 6, MUX = 0, MUX_EN = 1, reg_index = TX_index)
+		return_array += reg1
+		delay1 = self.delay_in_sample(BUF_ENB = 6, MUX = 0, MUX_EN = 1, num_of_sample= num_of_sample_per_trig_period - len(trig1)- len(reg1))
+		return_array += delay1
 		return return_array
+
 
 	def ChirpGen_alloff(self,which_group, num_of_trig_width, num_of_sample_per_trig_period):
 		return_array = []
@@ -163,6 +183,7 @@ class data_proc(object) :
 		for i in range(len(self.reg_arr[reg_index])):
 			return_array.append(self.WriteLine(0, BUF_ENB, MUX, MUX_EN, 1, 0, self.addr_arr[reg_index][i], self.reg_arr[reg_index][i]))
 			return_array.append(self.WriteLine(0, BUF_ENB, MUX, MUX_EN, 1, 1, self.addr_arr[reg_index][i], self.reg_arr[reg_index][i]))
+			return_array.append(self.WriteLine(0, BUF_ENB, MUX, MUX_EN, 1, 0, self.addr_arr[reg_index][i], self.reg_arr[reg_index][i]))
 		return return_array
 
 	def Write_Rest(self, BUF_ENB, MUX, MUX_EN):

@@ -24,8 +24,8 @@ class pxi6534_gen(object):
 
     def write_FPGA_initial(self, file_to_write):
         object1 = dp.data_proc(file_to_write)
-        object1.PXI_seq_reset()
-        object1.PXI_seq_initial()
+        # object1.PXI_seq_reset()
+        object1.PXI_seq_initial(self.sampling_clock, 100e-6)
         print('data proc length:' + str(len(object1.PXI_arr)))
         return object1.PXI_arr
 
@@ -35,10 +35,17 @@ class pxi6534_gen(object):
             'ADDR1', 'ADDR0', 'REG7', 'REG6', 'REG5', 'REG4', 'REG3', 'REG2', 'REG1', 'REG0']
         logic_analyzer1 = LA.LogicAnalyzer(input_arr)
         logic_analyzer1.LogicPlot(signal_collection, self.sampling_clock)
+        logic_analyzer1.read_count(signal_collection)
 
     def write_doppler(self, file_to_write, trig_period, num_of_doppler):
         object1 = dp.data_proc(file_to_write)
         object1.PXI_seq_doppler(self.sampling_clock, trig_period, num_of_doppler)
+        return object1.PXI_arr
+
+    def write_dummy_delay(self, file_to_write, BUF_ENB, MUX, MUX_EN, time):
+        object1 = dp.data_proc(file_to_write)
+        object1.PXI_seq_dummy_delay(BUF_ENB = BUF_ENB, MUX =MUX, MUX_EN = MUX_EN, fs =self.sampling_clock, time = time)
+        print(object1.PXI_arr)
         return object1.PXI_arr
 
     def write_chirp_only(self, file_to_write, num_of_chirp, trig_period, BUF_ENB, MUX, MUX_EN):
@@ -46,20 +53,25 @@ class pxi6534_gen(object):
         object1.PXI_seq_chrip_only(fs = self.sampling_clock, trig_period = trig_period, num_of_chrips = num_of_chirp, BUF_ENB = BUF_ENB, MUX = MUX, MUX_EN = MUX_EN)
         return object1.PXI_arr
 
-    def PXI6534_run(self, input_arr):
+    def PXI6534_run(self, input_arr, size):
         input_arr = np.array(input_arr, dtype = 'uint32')
-        size =  input_arr.size
+        size =  size
         with nidaqmx.Task() as task:
             do_channel = task.do_channels.add_do_chan('Dev36/port0:3',
                 line_grouping=LineGrouping.CHAN_FOR_ALL_LINES)
             do_channel.do_output_drive_type = DigitalDriveType.ACTIVE_DRIVE
 
-            task.timing.cfg_burst_handshaking_timing_export_clock(self.sampling_clock, sample_clk_outp_term = '/Dev36/PXI_Trig5', sample_mode=AcquisitionType.CONTINUOUS, 
+            # task.timing.cfg_samp_clk_timing(self.sampling_clock,active_edge=Edge.RISING,
+            #             sample_mode=AcquisitionType.FINITE,samps_per_chan=size)
+
+            task.timing.cfg_burst_handshaking_timing_export_clock(self.sampling_clock, sample_clk_outp_term = '/Dev36/PXI_Trig5', sample_mode=AcquisitionType.FINITE, 
                 samps_per_chan=size, sample_clk_pulse_polarity=Polarity.ACTIVE_HIGH, pause_when=Level.HIGH, ready_event_active_level=Polarity.ACTIVE_HIGH)
+
             print('arr_size:' + str(input_arr.size))
 
             samples_written = task.write(input_arr, auto_start=True)
-            time.sleep(2)
+            time.sleep(10)
+            # task.start()
             print('pxi6534 write done !')
 
 

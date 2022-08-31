@@ -51,3 +51,16 @@ class LogicAnalyzer(object):
 
         plt.show()
 
+    def read_count(self, input):
+        for j in input:
+            count = self.read_rise_edge(self.results[j])
+            print(j+ ' : ' +str(count))
+
+    def read_rise_edge(self, input):
+        counter = 0
+        for i in range(len(input)-1):
+            delta = input[i+1] - input[i]
+            if delta == 1:
+                counter += 1
+        return counter 
+
