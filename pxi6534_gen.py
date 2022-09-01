@@ -19,6 +19,7 @@ from nidaqmx.stream_writers import (
 
 
 class pxi6534_gen(object):
+    pxi6534_gen_arr = []
     def __init__(self, sampling_clock):
         self.sampling_clock = sampling_clock
 
@@ -26,7 +27,6 @@ class pxi6534_gen(object):
         object1 = dp.data_proc(file_to_write)
         # object1.PXI_seq_reset()
         object1.PXI_seq_initial(self.sampling_clock, 100e-6)
-        print('data proc length:' + str(len(object1.PXI_arr)))
         return object1.PXI_arr
 
     def sw_logic_analyzer(self, input_arr):
@@ -38,9 +38,9 @@ class pxi6534_gen(object):
         logic_analyzer1.read_count(signal_collection)
 
     def write_doppler(self, file_to_write, trig_period, num_of_doppler):
-        object1 = dp.data_proc(file_to_write)
-        object1.PXI_seq_doppler(self.sampling_clock, trig_period, num_of_doppler)
-        return object1.PXI_arr
+        object_write_doppler = dp.data_proc(file_to_write)
+        object_write_doppler.PXI_seq_doppler(self.sampling_clock, trig_period, num_of_doppler)
+        return object_write_doppler.PXI_arr
 
     def write_dummy_delay(self, file_to_write, BUF_ENB, MUX, MUX_EN, time):
         object1 = dp.data_proc(file_to_write)

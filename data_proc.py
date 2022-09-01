@@ -1,9 +1,9 @@
 import csv 
 class data_proc(object) :
-	addr_arr = []
-	reg_arr = []
-	PXI_arr = []
 	def __init__(self, TSV_arr):
+		self.addr_arr = []
+		self.reg_arr = []
+		self.PXI_arr = []
 		for i in TSV_arr:
 			addr, reg = self.MultiTSV(i)
 			self.addr_arr.append(addr)
