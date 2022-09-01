@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 
 points_per_cycle = 6500
-num_cycles = 1024*27
+num_cycles = 256*27
 delay_in = 3800
 pxi_scope = M3100A.M3100A(points_per_cycle, num_cycles, delay_in)
 data_read = pxi_scope.acqisition_wait(1)
@@ -14,8 +14,8 @@ print(type(data_read))
 # fig, ax = plt.subplots()
 # ax.plot(data_read)
 # plt.show()
-# data_list = list(data_read)
-# print(len(data_list))
+data_list = list(data_read)
+print(len(data_list))
 results = []
 for i in range(0, num_cycles, 27):
 	_temp = []

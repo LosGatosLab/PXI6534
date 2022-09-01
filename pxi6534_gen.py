@@ -70,7 +70,7 @@ class pxi6534_gen(object):
             print('arr_size:' + str(input_arr.size))
 
             samples_written = task.write(input_arr, auto_start=True)
-            time.sleep(10)
+            time.sleep(5)
             # task.start()
             print('pxi6534 write done !')
 

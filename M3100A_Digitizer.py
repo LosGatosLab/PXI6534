@@ -24,7 +24,7 @@ class M3100A:
 		# CONFIGURATION CONSTANTS
 		self.FULL_SCALE = 0.5 # half peak to peak voltage
 		self.DELAY_IN = delay_in # Number of samples that trigger is delayed 
-		self.READ_TIMEOUT = 0 # 0 means infinite timeout
+		self.READ_TIMEOUT = 100 # 0 means infinite timeout
 		self.WAITER_TIMEOUT_SECONDS = 0.1
 
 		# CONFIGURATION CONSTANTS
@@ -81,7 +81,6 @@ class M3100A:
 		run.PXI6534_run(input_array, 2+len(input_array))
 		while self.digitizer.DAQcounterRead(ch) != self.TOTAL_POINTS:
 			time.sleep(0.02)
-			cnt += 1
 			print(self.digitizer.DAQcounterRead(ch))
 		if self.digitizer.DAQcounterRead(ch) == self.TOTAL_POINTS:
 			readPoints = self.digitizer.DAQread(ch, self.TOTAL_POINTS, self.READ_TIMEOUT)/32767*self.FULL_SCALE

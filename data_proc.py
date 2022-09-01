@@ -88,40 +88,40 @@ class data_proc(object) :
 		return return_array
 
 
-	# def ChirpGen(self,which_group, TX_index, num_of_trig_width, num_of_sample_per_trig_period):
-	# 	return_array = []
-	# 	if (which_group == 0):
-	# 		trig1 = self.WriteTrig(BUF_ENB = 6, MUX = 0, MUX_EN = 1, trig_width = num_of_trig_width)
-	# 		return_array += trig1
-	# 		reg1 = self.Write_in_reg(BUF_ENB = 6, MUX = 0, MUX_EN = 1, reg_index = TX_index)
-	# 		return_array += reg1
-	# 		delay1 = self.delay_in_sample(BUF_ENB = 6, MUX = 0, MUX_EN = 1, num_of_sample= num_of_sample_per_trig_period - len(trig1)- len(reg1))
-	# 		return_array += delay1
-	# 	elif (which_group == 1):
-	# 		trig1 = self.WriteTrig(BUF_ENB = 5, MUX = 1, MUX_EN = 1, trig_width = num_of_trig_width)
-	# 		return_array += trig1
-	# 		reg1 = self.Write_in_reg(BUF_ENB = 5, MUX = 1, MUX_EN = 1, reg_index = TX_index)
-	# 		return_array += reg1
-	# 		delay1 = self.delay_in_sample(BUF_ENB = 5, MUX = 1, MUX_EN = 1, num_of_sample= num_of_sample_per_trig_period - len(trig1)- len(reg1))
-	# 		return_array += delay1
-	# 	else:
-	# 		trig1 = self.WriteTrig(BUF_ENB = 3, MUX = 2, MUX_EN = 1, trig_width = num_of_trig_width)
-	# 		return_array += trig1
-	# 		reg1 = self.Write_in_reg(BUF_ENB = 3, MUX = 2, MUX_EN = 1, reg_index = TX_index)
-	# 		return_array += reg1
-	# 		delay1 = self.delay_in_sample(BUF_ENB = 3, MUX = 2, MUX_EN = 1, num_of_sample= num_of_sample_per_trig_period - len(trig1)- len(reg1))
-	# 		return_array += delay1
-	# 	return return_array
-
 	def ChirpGen(self,which_group, TX_index, num_of_trig_width, num_of_sample_per_trig_period):
 		return_array = []
-		trig1 = self.WriteTrig(BUF_ENB = 6, MUX = 0, MUX_EN = 1, trig_width = num_of_trig_width)
-		return_array += trig1
-		reg1 = self.Write_in_reg(BUF_ENB = 6, MUX = 0, MUX_EN = 1, reg_index = TX_index)
-		return_array += reg1
-		delay1 = self.delay_in_sample(BUF_ENB = 6, MUX = 0, MUX_EN = 1, num_of_sample= num_of_sample_per_trig_period - len(trig1)- len(reg1))
-		return_array += delay1
+		if (which_group == 0):
+			trig1 = self.WriteTrig(BUF_ENB = 6, MUX = 0, MUX_EN = 1, trig_width = num_of_trig_width)
+			return_array += trig1
+			reg1 = self.Write_in_reg(BUF_ENB = 6, MUX = 0, MUX_EN = 1, reg_index = TX_index)
+			return_array += reg1
+			delay1 = self.delay_in_sample(BUF_ENB = 6, MUX = 0, MUX_EN = 1, num_of_sample= num_of_sample_per_trig_period - len(trig1)- len(reg1))
+			return_array += delay1
+		elif (which_group == 1):
+			trig1 = self.WriteTrig(BUF_ENB = 5, MUX = 1, MUX_EN = 1, trig_width = num_of_trig_width)
+			return_array += trig1
+			reg1 = self.Write_in_reg(BUF_ENB = 5, MUX = 1, MUX_EN = 1, reg_index = TX_index)
+			return_array += reg1
+			delay1 = self.delay_in_sample(BUF_ENB = 5, MUX = 1, MUX_EN = 1, num_of_sample= num_of_sample_per_trig_period - len(trig1)- len(reg1))
+			return_array += delay1
+		else:
+			trig1 = self.WriteTrig(BUF_ENB = 3, MUX = 2, MUX_EN = 1, trig_width = num_of_trig_width)
+			return_array += trig1
+			reg1 = self.Write_in_reg(BUF_ENB = 3, MUX = 2, MUX_EN = 1, reg_index = TX_index)
+			return_array += reg1
+			delay1 = self.delay_in_sample(BUF_ENB = 3, MUX = 2, MUX_EN = 1, num_of_sample= num_of_sample_per_trig_period - len(trig1)- len(reg1))
+			return_array += delay1
 		return return_array
+
+	# def ChirpGen(self,which_group, TX_index, num_of_trig_width, num_of_sample_per_trig_period):
+	# 	return_array = []
+	# 	trig1 = self.WriteTrig(BUF_ENB = 6, MUX = 0, MUX_EN = 1, trig_width = num_of_trig_width)
+	# 	return_array += trig1
+	# 	reg1 = self.Write_in_reg(BUF_ENB = 6, MUX = 0, MUX_EN = 1, reg_index = TX_index)
+	# 	return_array += reg1
+	# 	delay1 = self.delay_in_sample(BUF_ENB = 6, MUX = 0, MUX_EN = 1, num_of_sample= num_of_sample_per_trig_period - len(trig1)- len(reg1))
+	# 	return_array += delay1
+	# 	return return_array
 
 
 	def ChirpGen_alloff(self,which_group, num_of_trig_width, num_of_sample_per_trig_period):
