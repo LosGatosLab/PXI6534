@@ -2,7 +2,6 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 class LogicAnalyzer(object):
-    results = {}
     # name_1 = ['Chirp_START', 'BUF3_ENB', 'BUF2_ENB', 'BUF1_ENB', 'SEL1', 'SEL0',
     #         'MUX_EN', 'P2.7', 'P2.6', 'P2.5', 'P2.4', 'P2.3', 'P2.2', 'RST',
     #         'STRB', 'ADDR7', 'ADDR6', 'ADDR5', 'ADDR4', 'ADDR3', 'ADDR2',
@@ -25,6 +24,7 @@ class LogicAnalyzer(object):
               'BUF1_ENB', 'BUF2_ENB', 'BUF3_ENB', 'Chirp_START']
 
     def __init__(self, input_array):
+        self.results = {}
         for i in input_array:
            self.integer2bit(30, i)
 

@@ -8,10 +8,10 @@ class data_proc(object) :
 			addr, reg = self.MultiTSV(i)
 			self.addr_arr.append(addr)
 			self.reg_arr.append(reg)
-		print('reg size:'+str(len(self.reg_arr)))
-		print(self.reg_arr)
-		print('reg size:'+str(len(self.addr_arr)))
-		print(self.addr_arr)
+		# print('reg size:'+str(len(self.reg_arr)))
+		# print(self.reg_arr)
+		# print('reg size:'+str(len(self.addr_arr)))
+		# print(self.addr_arr)
 
 
 	def PXI_seq_master(self,  fs, trig_period, num_of_doppler):
@@ -21,6 +21,7 @@ class data_proc(object) :
 			self.PXI_arr += self.PXI_arr_gen(fs, trig_period)
 
 	def PXI_seq_initial(self, fs, time):
+		self.PXI_arr += self.delay(BUF_ENB = 6, MUX = 0, MUX_EN = 1, fs = fs, time = 10e-6)  ### delay 10us to settle RSOC delay(self, BUF_ENB, MUX, MUX_EN, fs, time)
 		self.PXI_arr += self.Write_in_reg(BUF_ENB = 6, MUX = 0, MUX_EN = 1, reg_index = 0)   ### write all register for once self, BUF_ENB, MUX, MUX_EN, reg_index
 		self.PXI_arr += self.delay(BUF_ENB = 6, MUX = 0, MUX_EN = 1, fs = fs, time = time)  ### delay 10us to settle RSOC delay(self, BUF_ENB, MUX, MUX_EN, fs, time)
 
